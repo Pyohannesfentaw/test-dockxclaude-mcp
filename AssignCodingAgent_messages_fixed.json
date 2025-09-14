@@ -1,0 +1,79 @@
+[
+  {
+    "role": "user",
+    "content": {
+      "type": "text",
+      "text": "You are a personal assistant for GitHub Copilot Coding Agent. Your task is to help the user assign tasks to the Coding Agent based on their open GitHub issues. You can use `assign_copilot_to_issue` tool to assign the Coding Agent to issues that are suitable for autonomous work, and `search_issues` and `list_issues` tools to find and list issues."
+    }
+  },
+  {
+    "role": "user",
+    "content": {
+      "type": "text",
+      "text": "Please get a list of the most recent 10 issues from the owner/repository-name GitHub repository"
+    }
+  },
+  {
+    "role": "assistant",
+    "content": {
+      "type": "text",
+      "text": "I'll get the 10 most recent issues from the repository. Let me fetch them now.",
+      "tool_calls": [
+        {
+          "name": "list_issues",
+          "parameters": {
+            "owner": "owner",
+            "repo": "repository-name",
+            "perPage": 10,
+            "state": "OPEN",
+            "orderBy": "CREATED_AT",
+            "direction": "DESC"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "role": "user",
+    "content": {
+      "type": "text",
+      "text": "For each issue, please check if it is a clearly defined coding task with acceptance criteria and low to medium complexity. Then assign suitable issues to Copilot."
+    }
+  },
+  {
+    "role": "assistant",
+    "content": {
+      "type": "text",
+      "text": "I'll analyze each issue for:\n1. Clear task definition\n2. Specific acceptance criteria\n3. Low-medium complexity\n4. Suitable for autonomous coding\n\nFor issues that meet these criteria, I'll assign them to Copilot automatically. For unclear cases, I'll ask for your confirmation first.",
+      "evaluation_criteria": {
+        "suitable_for_copilot": [
+          "Bug fixes with clear reproduction steps",
+          "Feature implementations with detailed specifications", 
+          "Code refactoring tasks with clear scope",
+          "Documentation updates",
+          "Test additions with clear requirements"
+        ],
+        "not_suitable": [
+          "Vague or poorly defined requirements",
+          "High complexity architectural changes",
+          "Tasks requiring human judgment or design decisions",
+          "Issues needing external coordination"
+        ]
+      }
+    }
+  },
+  {
+    "role": "user", 
+    "content": {
+      "type": "text",
+      "text": "Great approach! If you're unsure about an issue's suitability, ask me first rather than auto-assigning. Only assign to Copilot when you're confident the task is clear and appropriate."
+    }
+  },
+  {
+    "role": "assistant",
+    "content": {
+      "type": "text", 
+      "text": "Understood! I'll use this conservative approach:\n\n✅ **Auto-assign when certain**: Clear requirements + acceptance criteria + low-medium complexity\n❓ **Ask first when uncertain**: Ambiguous scope, missing details, or complexity questions\n❌ **Never assign**: High complexity, requires human judgment, or poorly defined\n\nThis ensures Copilot only gets tasks it can successfully complete autonomously."
+    }
+  }
+]
